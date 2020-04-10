@@ -7,9 +7,12 @@
           <p>{{item.front_desc}}</p>
         </div>
         <van-grid :border="false" :column-num="2">
-          <van-grid-item>
-            <van-image src="https://img.yzcdn.cn/vant/apple-1.jpg" />
-          </van-grid-item>
+          <div v-if="item.plist">
+            <van-grid-item v-for="(ite,index) in item.plist.data" :key="index">
+              <van-image lazy-load :src="ite.list_pic_url" />
+              {{ite.name}}
+            </van-grid-item>
+          </div>
         </van-grid>
       </van-tab>
     </van-tabs>
@@ -27,17 +30,15 @@ export default {
       currentCategoryList: []
     };
   },
-  watch: {
-    tabActive: async function(index) {
-      console.log(index);
-      let id = this.currentCategoryList[index].id;
-      let page = 1,
-        size = 20;
-        this.getGoodsList()
-     
-      console.log(res)
-    }
-  },
+  //   watch: {
+  //     tabActive: function(index) {
+  //       console.log(index);
+  //       let id = this.currentCategoryList[index].id;
+  //       let page = 1
+  //       let size = 20;
+  //       this.getGoodsList(id, page,size);
+  //     }
+  //   },
   mounted() {
     this.getGoodsCategory();
     console.log(this.id);
@@ -47,9 +48,20 @@ export default {
       let res = await axios.get(api.GoodsCategory, { params: { id: this.id } });
       console.log(res.data);
       this.currentCategoryList = res.data.data.brotherCategory;
+      let id = this.currentCategoryList[0].id;
+      let page = 1;
+      let size = 20;
+      this.currentCategoryList.forEach(async (item, index) => {
+        item.plist = await this.getGoodsList(item.id, page, size);
+        console.log(item.plist);
+      });
     },
-    getGoodsList(id,page){
-         let res = await axios.get(api.GoodsList, { params: { categoryId:id, page, size } });
+    async getGoodsList(id, page, size) {
+      let res = await axios.get(api.GoodsList, {
+        params: { categoryId: id, page, size }
+      });
+      return res.data.data;
+      console.log(res);
     }
   }
 };
