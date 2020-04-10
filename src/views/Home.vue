@@ -55,19 +55,14 @@
     </div>
     <div style="height:55px"></div>
     <!-- tabbar -->
-    <van-tabbar v-model="active">
-      <van-tabbar-item icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item icon="search">专题</van-tabbar-item>
-      <van-tabbar-item icon="friends-o">分类</van-tabbar-item>
-      <van-tabbar-item icon="shopping-cart-o">购物车</van-tabbar-item>
-      <van-tabbar-item icon="contact">我的</van-tabbar-item>
-    </van-tabbar>
+    <tabbar-btn></tabbar-btn>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import api from "../assets/config/api";
+import tabbarBtn from '../components/tabber'
 export default {
   data() {
     return {
@@ -75,7 +70,6 @@ export default {
       brandList: [],
       newGoodsList: [],
       hotGoodsList: [],
-      active:0,
       data: {}
     };
   },
@@ -86,6 +80,9 @@ export default {
     channel: function() {
       return this.data.channel ? this.data.channel : [];
     }
+  },
+  components:{
+    tabbarBtn
   },
   async mounted() {
     let result = await axios.get(api.IndexUrl);
