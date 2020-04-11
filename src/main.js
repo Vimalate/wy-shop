@@ -7,7 +7,7 @@ import store from './store'
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
-
+import './assets/config/rem';//rem
 Vue.use(Lazyload);
 
 Vue.use(Vant);
