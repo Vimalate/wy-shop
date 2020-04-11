@@ -1,6 +1,6 @@
 <template>
   <div class="product">
-    <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="商品" left-text="返回" left-arrow @click-left="onClickLeft" />
     <!-- 轮播 -->
     <van-swipe :autoplay="3000">
       <van-swipe-item v-for="(image, index) in images" :key="index">
@@ -31,7 +31,7 @@
     <div class="goodsDetail" v-html="info.goods_desc"></div>
     <!-- 购物车 -->
     <van-goods-action>
-      <van-goods-action-icon icon="cart-o" text="购物车" />
+      <van-goods-action-icon :info="$store.state.cartTotal.goodsCount==0?'':$store.state.cartTotal.goodsCount" icon="cart-o" text="购物车" />
       <van-goods-action-icon icon="star" text="已收藏" />
       <van-goods-action-button type="warning" @click="addCard" text="加入购物车" />
       <van-goods-action-button type="danger" text="立即购买" />
@@ -64,23 +64,50 @@ let sku = {
           name: "蓝色"
         }
       ],
-      k_s: "s1" // skuKeyStr：sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+      k_s: "s-1" // skuKeyStr：sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
     }
   ],
   // 所有 sku 的组合列表，比如红色、M 码为一个 sku 组合，红色、S 码为另一个组合
-  // list: [
-  //   {
-  //     id: 2259, // skuId，下单时后端需要
-  //     price: 100, // 价格（单位分）
-  //     s1: "1215", // 规格类目 k_s 为 s1 的对应规格值 id
-  //     s2: "1193", // 规格类目 k_s 为 s2 的对应规格值 id
-  //     s3: "0", // 最多包含3个规格值，为0表示不存在该规格
-  //     stock_num: 110 // 当前 sku 组合对应的库存
-  //   }
-  // ],
-  price: "1.00", // 默认价格（单位元）
-  stock_num: 227, // 商品总库存
-  collection_id: 2261, // 无规格商品 skuId 取 collection_id，否则取所选 sku 组合对应的 id
+  list: [
+    {
+      id: 2259, // skuId，下单时后端需要
+      price: 100, // 价格（单位分）
+      "s-1": "1", // 规格类目 k_s 为 s1 的对应规格值 id
+      "s-2": "2", // 规格类目 k_s 为 s2 的对应规格值 id
+      stock_num: 110 // 当前 sku 组合对应的库存
+    },
+    {
+      id: 2259, // skuId，下单时后端需要
+      price: 100, // 价格（单位分）
+      "s-1": "2", // 规格类目 k_s 为 s1 的对应规格值 id
+      "s-2": "3", // 规格类目 k_s 为 s2 的对应规格值 id
+      stock_num: 110 // 当前 sku 组合对应的库存
+    },
+    {
+      id: 2259, // skuId，下单时后端需要
+      price: 100, // 价格（单位分）
+      "s-1": "2", // 规格类目 k_s 为 s1 的对应规格值 id
+      "s-2": "4", // 规格类目 k_s 为 s2 的对应规格值 id
+      stock_num: 130 // 当前 sku 组合对应的库存
+    },
+    {
+      id: 2259, // skuId，下单时后端需要
+      price: 100, // 价格（单位分）
+      "s-1": "1", // 规格类目 k_s 为 s1 的对应规格值 id
+      "s-2": "4", // 规格类目 k_s 为 s2 的对应规格值 id
+      stock_num: 130 // 当前 sku 组合对应的库存
+    },
+    {
+      id: 2259, // skuId，下单时后端需要
+      price: 100, // 价格（单位分）
+      "s-1": "3", // 规格类目 k_s 为 s1 的对应规格值 id
+      "s-2": "1", // 规格类目 k_s 为 s2 的对应规格值 id
+      stock_num: 100 // 当前 sku 组合对应的库存
+    }
+  ],
+  price: "100.00", // 默认价格（单位元）
+  stock_num: 227 // 商品总库存
+  // collection_id: 2261, // 无规格商品 skuId 取 collection_id，否则取所选 sku 组合对应的 id
   // none_sku: false, // 是否无规格商品
   // hide_stock: false // 是否隐藏剩余库存
 };
@@ -99,13 +126,14 @@ export default {
       goods: {
         // 默认商品 sku 缩略图
         picture: "https://img.yzcdn.cn/1.jpg"
-      },
-      messageConfig: {
-        // 数据结构见下方文档
       }
     };
   },
+  created() {
+    this.$store.dispatch('getCartList')
+  },
   mounted() {
+    
     this.getGoodsDetail();
   },
   methods: {
@@ -126,14 +154,15 @@ export default {
           let arr = [];
           item.valueList.forEach(ite => {
             arr.push({
-              id: ite.goods_id, // skuValueId：规格值 id
+              id: ite.id, // skuValueId：规格值 id
               name: ite.value // skuValueName：规格值名称
             });
+            return arr;
           });
           tree.push({
             k: item.name, // skuKeyName：规格类目名称
             v: arr,
-            k_s: item.specification_id+'' // skuKeyStr：sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+            k_s: "s-" + item.specification_id // skuKeyStr：sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
           });
         });
         this.sku.tree = tree;
@@ -145,9 +174,28 @@ export default {
       this.$router.go(-1);
     },
     onBuyClicked() {},
-    onAddCartClicked() {
+    async onAddCartClicked(skuData) {
+      // 添加到购物车，发送数据给后端
+      let chooseContent =
+        skuData.selectedSkuComb["s-1"] + "_" + skuData.selectedSkuComb["s-2"];
+      let result = this.data.productList.filter(
+        item => item.goods_specification_ids === chooseContent
+      );
+      console.log(skuData);
+      console.log(result);
+      // 所选商品数据发送给后端
+      let res = await axios.post(api.CartAdd, {
+        goodsId: result[0].goods_id,
+        number: skuData.selectedNum,
+        productId: result[0].id
+      });
+      console.log(res);
+      this.$store.commit("setCartList", res.data.data.cartList);
+      this.$store.commit("setCartTotal", res.data.data.cartTotal);
       this.show = false;
     },
+
+    // 显示购物车弹框
     addCard() {
       this.show = true;
     }
