@@ -47,14 +47,13 @@ export default {
   methods: {
     async getGoodsCategory() {
       let res = await axios.get(api.GoodsCategory, { params: { id: this.id } });
-      console.log(res.data);
+      // console.log(res.data);
       this.currentCategoryList = res.data.data.brotherCategory;
       let id = this.currentCategoryList[0].id;
       let page = 1;
       let size = 20;
       this.currentCategoryList.forEach(async (item, index) => {
         item.plist = await this.getGoodsList(item.id, page, size);
-        console.log(item.plist);
         this.$forceUpdate();
       });
     },
