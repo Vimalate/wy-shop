@@ -49,6 +49,11 @@ const routes = [
     name: 'cart',
     component: () => import(/* webpackChunkName: "about" */ '../views/cart.vue')
   },
+  {
+    path: '/address',
+    name: 'address',
+    component: () => import(/* webpackChunkName: "about" */ '../views/address.vue')
+  },
 ]
 
 const router = new VueRouter({

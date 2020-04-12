@@ -34,7 +34,7 @@
       <van-goods-action-icon :info="$store.state.cartTotal.goodsCount==0?'':$store.state.cartTotal.goodsCount" icon="cart-o" text="购物车" to="/cart" />
       <van-goods-action-icon icon="star" text="已收藏" />
       <van-goods-action-button type="warning" @click="addCard" text="加入购物车" />
-      <van-goods-action-button type="danger" text="立即购买" />
+      <van-goods-action-button type="danger" @click="addCard" text="立即购买" />
     </van-goods-action>
     <!-- sku -->
     <van-sku
@@ -173,7 +173,9 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    onBuyClicked() {},
+    onBuyClicked() {
+      this.$router.push('/cart')
+    },
     async onAddCartClicked(skuData) {
       // 添加到购物车，发送数据给后端
       let chooseContent =

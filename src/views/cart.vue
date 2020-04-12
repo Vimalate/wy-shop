@@ -57,11 +57,13 @@ export default {
     ...mapActions({
       getList: "getCartList"
     }),
-    onSubmit() {},
+    onSubmit() {
+      this.$router.push('/address')
+    },
     async isChecked(event, item) {
       console.log(event, item);
       let res = await axios.post(api.CartChecked, {
-        isChecked: parseInt(event),
+        isChecked: Number(event),
         productIds: item.product_id
       });
       console.log(res)
