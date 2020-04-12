@@ -31,7 +31,7 @@
     <div class="goodsDetail" v-html="info.goods_desc"></div>
     <!-- 购物车 -->
     <van-goods-action>
-      <van-goods-action-icon :info="$store.state.cartTotal.goodsCount==0?'':$store.state.cartTotal.goodsCount" icon="cart-o" text="购物车" />
+      <van-goods-action-icon :info="$store.state.cartTotal.goodsCount==0?'':$store.state.cartTotal.goodsCount" icon="cart-o" text="购物车" to="/cart" />
       <van-goods-action-icon icon="star" text="已收藏" />
       <van-goods-action-button type="warning" @click="addCard" text="加入购物车" />
       <van-goods-action-button type="danger" text="立即购买" />

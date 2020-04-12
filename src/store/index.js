@@ -25,10 +25,10 @@ export default new Vuex.Store({
   },
   actions: {
     // 获取购物车列表
-    async getCartList(content){
+    async getCartList(context){
       let res = await axios.get(api.CartList);
-      content.commit('setCartList',res.data.data.cartList)
-      content.commit('setCartTotal',res.data.data.cartTotal)
+      context.commit('setCartList',res.data.data.cartList)
+      context.commit('setCartTotal',res.data.data.cartTotal)
       console.log(res.data)
     }
   },
